@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Cameron \"Herringway\" Ross"
+	],
+	"copyright": "Copyright © 2020, Herringway",
+	"description": "Compares ROMs",
+	"license": "BSL-1.0",
+	"name": "romcom"
+}

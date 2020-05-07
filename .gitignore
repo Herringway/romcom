@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/romcom
+romcom.so
+romcom.dylib
+romcom.dll
+romcom.a
+romcom.lib
+romcom-test-*
+*.exe
+*.o
+*.obj
+*.lst
