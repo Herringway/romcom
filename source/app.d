@@ -8,11 +8,22 @@ import std.getopt;
 import std.path;
 import std.stdio;
 
-import romcom.snes;
 import romcom.common;
+import romcom.nes;
+import romcom.snes;
+import romcom.plain;
+
+enum Type {
+	snes,
+	nes,
+	plain
+}
 
 void main(string[] args) {
-	auto opts = getopt(args);
+	Type type = Type.snes;
+
+	auto opts = getopt(args,
+		"type|t", "Type of ROM being compared", &type);
 
 	if (opts.helpWanted || (args.length < 2) || (args.length > 4)) {
 		defaultGetoptPrinter("Usage: romcom <romfile> [romfile2]", opts.options);
@@ -24,7 +35,7 @@ void main(string[] args) {
 	ubyte[][] files;
 	foreach (filename; filenames) {
 		files ~= cast(ubyte[])read(filename);
-		results[filename] = getSNESHashes!SHA1(files[$ - 1]);
+		results[filename] = getHashes!SHA1(type, files[$ - 1]);
 	}
 	if (filenames.length == 1) {
 		static void printResult(string type, string hash) {
@@ -37,7 +48,7 @@ void main(string[] args) {
 		}
 
 	} else if (filenames.length == 2) {
-		auto diffs = getSNESDifferences(files[0], files[1]);
+		auto diffs = getDifferences(type, files[0], files[1]);
 		static void printCompare(string type, string hash1, string hash2, size_t differences, size_t total) {
 			const equal = (hash1 == hash2) ? "==" : "!=";
 			const colour = (hash1 == hash2) ? "32" : "31";
@@ -50,5 +61,21 @@ void main(string[] args) {
 		}
 	} else {
 		assert(0, "unimplemented");
+	}
+}
+
+auto getHashes(Hash)(Type type, const scope ubyte[] file) {
+	final switch (type) {
+		case Type.snes: return getSNESHashes!Hash(file);
+		case Type.nes: return getNESHashes!Hash(file);
+		case Type.plain: return getPlainHashes!Hash(file);
+	}
+}
+
+auto getDifferences(Type type, const scope ubyte[] file1, const scope ubyte[] file2) {
+	final switch (type) {
+		case Type.snes: return getSNESDifferences(file1, file2);
+		case Type.nes: return getNESDifferences(file1, file2);
+		case Type.plain: return getPlainDifferences(file1, file2);
 	}
 }
