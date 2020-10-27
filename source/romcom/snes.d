@@ -42,7 +42,7 @@ auto getSNESDifferences(const scope ubyte[] fileData1, const scope ubyte[] fileD
 	const detected2 = detectSNESROMType(fileData2);
     const data = detected1.headered ? fileData1[0x200 .. $] : fileData1;
     const data2 = detected2.headered ? fileData2[0x200 .. $] : fileData2;
-    result.primary.totalBytes = fileData1.length;
+    result.primary.totalBytes = data.length;
 	foreach (idx, bank; zip(data.chunks(detected1.hasHalfBanks ? 0x8000 : 0x10000), data2.chunks(detected2.hasHalfBanks ? 0x8000 : 0x10000)).enumerate) {
 		SectionCompared section;
 		foreach (b1, b2; zip(bank[0], bank[1])) {

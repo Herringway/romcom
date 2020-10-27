@@ -47,7 +47,7 @@ auto getNESDifferences(const scope ubyte[] fileData1, const scope ubyte[] fileDa
 	const detected2 = detectROMType(fileData2);
     const data = fileData1[0x10 .. $];
     const data2 = fileData2[0x10 .. $];
-    result.primary.totalBytes = fileData1.length;
+    result.primary.totalBytes = data.length;
     switch (detected1.mapper) {
     	case Mapper.MMC3_6:
 			foreach (idx, bank; zip(data.chunks(0x2000), data2.chunks(0x2000)).enumerate) {
